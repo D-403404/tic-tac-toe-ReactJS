@@ -36,3 +36,45 @@
     transform: rotate(360deg);
   }
 }
+
+.square {
+  background: white;
+  border: 1px solid black;
+  width: 34px;
+  height: 34px;
+  text-align: center;
+  margin-top: -1px;
+  margin-left: -1px;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 0;
+  line-height: 34px;
+}
+
+.highlighted {
+  background: limegreen;
+  border: 1px solid black;
+  width: 34px;
+  height: 34px;
+  text-align: center;
+  margin-top: -1px;
+  margin-left: -1px;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 0;
+  line-height: 34px;
+}
+
+/* Require .scss (sass) */
+/* .highlighted {
+  @extend .square;
+  background: limegreen;
+} */
+
+.board-row {
+  clear: both;
+  content: '';
+  display: table;
+}
