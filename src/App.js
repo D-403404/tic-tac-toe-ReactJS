@@ -10,7 +10,7 @@ function Board({ xNext, squares, onPlay }) {
     const nextSquares = squares.slice();
     if (xNext) nextSquares[i] = "X";
     else nextSquares[i] = "O";
-    onPlay(nextSquares);
+    onPlay(nextSquares, i);
   }
 
   function checkWinner(squares) {
@@ -45,29 +45,41 @@ function Board({ xNext, squares, onPlay }) {
 
   return (
     <>
-      <div>{status}</div>
+      <div className="button">{status}</div>
+      <div className="board-row">
+        <Tile format="square !bg-cyan-300" />
+        {[0, 1, 2].map((col) => (
+          <Tile format="square !bg-cyan-300" value={col} key={col} />
+        ))}
+      </div>
       {[0, 1, 2].map((row) => (
         <div className="board-row" key={row}>
+          <Tile format="square !bg-cyan-300" value={row} key={row} />
           {[0, 1, 2].map((col) => {
             const value = row * 3 + col;
-            if (winner && (value === winner[1][0] || value === winner[1][1] || value === winner[1][2]))
-            return (
-              <Tile
-                format='highlighted'
-                value={squares[value]}
-                onSquareClick={() => handleClick(value)}
-                key={value}
-              />
-            );
+            if (
+              winner &&
+              (value === winner[1][0] ||
+                value === winner[1][1] ||
+                value === winner[1][2])
+            )
+              return (
+                <Tile
+                  format="highlighted"
+                  value={squares[value]}
+                  onSquareClick={() => handleClick(value)}
+                  key={value}
+                />
+              );
             else
-            return (
-              <Tile
-                format='square'
-                value={squares[value]}
-                onSquareClick={() => handleClick(value)}
-                key={value}
-              />
-            );
+              return (
+                <Tile
+                  format="square"
+                  value={squares[value]}
+                  onSquareClick={() => handleClick(value)}
+                  key={value}
+                />
+              );
           })}
         </div>
       ))}
@@ -76,7 +88,10 @@ function Board({ xNext, squares, onPlay }) {
 }
 
 function Game() {
-  const [history, setHistory] = useState([[Array(9).fill(null), 0]]);
+  const [history, setHistory] = useState([
+    [Array(9).fill(null), 0, [null, null, null]],
+  ]);
+  // [Array(9), step#, [symbol, row, col]]
   const [currMove, setCurrMove] = useState(0);
   // const currMove = history.length - 1;
   const xNext = currMove % 2 === 0;
@@ -89,10 +104,10 @@ function Game() {
     ? history.slice(0, currMove)
     : history.slice(0, currMove).reverse();
 
-  function handlePlay(nextSquares) {
+  function handlePlay(nextSquares, i) {
     const nextHistory = [
       ...history.slice(0, currMove + 1),
-      [nextSquares, currMove + 1],
+      [nextSquares, currMove + 1, [nextSquares[i], Math.floor(i / 3), i % 3]],
     ];
     setHistory(nextHistory);
     setCurrMove(nextHistory.length - 1);
@@ -110,39 +125,53 @@ function Game() {
   const moves = dispMoves.map((move) => {
     console.log(move);
     let description;
-    if (move[1] > 0) description = "Go to step #" + move[1];
+    if (move[1] > 0)
+      description =
+        "Go to step #" +
+        move[1] +
+        ": " +
+        move[2][0] +
+        "(" +
+        move[2][1] +
+        "," +
+        move[2][2] +
+        ")";
     else description = "Go to game start";
     // console.log(...history);
 
     return (
       <li key={move[1]}>
-        <button onClick={() => jumpTo(move[1])}>{description}</button>
+        <button className="button" onClick={() => jumpTo(move[1])}>
+          {description}
+        </button>
       </li>
     );
   });
 
   return (
-    <div>
+    <div className="w-full h-[100vh] bg-gradient-to-r from-cyan-500 to-blue-700">
       <div>
         <Board xNext={xNext} squares={currSquares[0]} onPlay={handlePlay} />
       </div>
       <div>
-        <button onClick={sortMove}>{sortDesc}</button>
+        <button className="button !mt-[10px] !mb-[10px]" onClick={sortMove}>
+          {sortDesc}
+        </button>
         <ol>
-          {order && (
-            <div>
-              {moves}
-              <li>You are at move #{currMove}</li>
-            </div>
-          )}
-          {!order && (
-            <div>
-              <li>You are at move #{currMove}</li>
-              {moves}
-            </div>
-          )}
+          {order && <div>{moves}</div>}
+          <li className="button">
+            You are at move #{currMove}
+            {currMove > 0 && (
+              <div className="inline">
+                : {history[currMove][2][0]}({history[currMove][2][1]},
+                {history[currMove][2][2]}){" "}
+              </div>
+            )}
+          </li>
+          {!order && <div>{moves}</div>}
         </ol>
       </div>
+      {/* <div className="text-3xl font-bold underline bg-red mt-[10px]">sasdasda</div> */}
     </div>
   );
 }

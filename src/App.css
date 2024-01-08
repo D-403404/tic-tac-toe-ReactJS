@@ -78,3 +78,10 @@
   content: '';
   display: table;
 }
+
+.button {
+  border: 1px solid black;
+  background: lightgrey;
+  margin: 0 0 5px 0;
+  width: fit-content;
+}
