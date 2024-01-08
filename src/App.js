@@ -106,7 +106,6 @@ function Game() {
     : history.slice(0, currMove).reverse();
 
   function handlePlay(nextSquares, i) {
-    const currHistory = history.slice();
     const nextHistory = [
       ...history.slice(0, currMove + 1),
       [nextSquares, currMove + 1, [nextSquares[i], Math.floor(i / 3), i % 3]],
@@ -178,7 +177,6 @@ function Game() {
           </ol>
         </div>
       </div>
-      {/* <div className="text-3xl font-bold underline bg-red mt-[10px]">sasdasda</div> */}
     </div>
   );
 }
