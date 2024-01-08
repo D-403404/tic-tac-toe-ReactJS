@@ -92,6 +92,7 @@ function Game() {
     [Array(9).fill(null), 0, [null, null, null]],
   ]);
   // [Array(9), step#, [symbol, row, col]]
+  const [prevMove, setPrevMove] = useState(0);
   const [currMove, setCurrMove] = useState(0);
   // const currMove = history.length - 1;
   const xNext = currMove % 2 === 0;
@@ -105,15 +106,18 @@ function Game() {
     : history.slice(0, currMove).reverse();
 
   function handlePlay(nextSquares, i) {
+    const currHistory = history.slice();
     const nextHistory = [
       ...history.slice(0, currMove + 1),
       [nextSquares, currMove + 1, [nextSquares[i], Math.floor(i / 3), i % 3]],
     ];
     setHistory(nextHistory);
+    setPrevMove(currMove);
     setCurrMove(nextHistory.length - 1);
   }
 
   function jumpTo(step) {
+    setPrevMove(currMove);
     setCurrMove(step);
   }
 
@@ -157,19 +161,22 @@ function Game() {
         <button className="button !mt-[10px] !mb-[10px]" onClick={sortMove}>
           {sortDesc}
         </button>
-        <ol>
-          {order && <div>{moves}</div>}
-          <li className="button !bg-cyan-200">
-            You are at move #{currMove}
-            {currMove > 0 && (
-              <div className="inline">
-                : {history[currMove][2][0]}({history[currMove][2][1]},
-                {history[currMove][2][2]}){" "}
-              </div>
-            )}
-          </li>
-          {!order && <div>{moves}</div>}
-        </ol>
+        <button className="button !mt-[10px] !mb-[10px] !ml-[10px]" onClick={() => jumpTo(prevMove)}>Return</button>
+        <div>
+          <ol>
+            {order && <div>{moves}</div>}
+            <li className="button !bg-cyan-200">
+              You are at move #{currMove}
+              {currMove > 0 && (
+                <div className="inline">
+                  : {history[currMove][2][0]}({history[currMove][2][1]},
+                  {history[currMove][2][2]}){" "}
+                </div>
+              )}
+            </li>
+            {!order && <div>{moves}</div>}
+          </ol>
+        </div>
       </div>
       {/* <div className="text-3xl font-bold underline bg-red mt-[10px]">sasdasda</div> */}
     </div>
