@@ -159,7 +159,7 @@ function Game() {
         </button>
         <ol>
           {order && <div>{moves}</div>}
-          <li className="button">
+          <li className="button !bg-cyan-200">
             You are at move #{currMove}
             {currMove > 0 && (
               <div className="inline">
